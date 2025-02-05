@@ -1,0 +1,14 @@
+{% extends 'quotes/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="quote-container">
+        <h1>Quote Site!</h1>
+    
+        <p class="quote-text">{{randomquote}}</p>
+        <br>
+    
+        <p>Here's a photo of our friend Haruki Murakami:</p>
+        <img class="quote-image" src="{{randomimage}}">
+    </div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% load static %}
+<html>
+    <head>
+        <title>Quote Site</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+
+        <nav>
+            <ul>
+                <li><a href="{% url 'quote_page' %}">Quote</a></li>
+                <li><a href="{% url 'show_all_page' %}">Show All</a></li>
+                <li><a href="{% url 'about_page' %}">About</a></li>
+            </ul>
+        </nav>
+
+        
+
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
