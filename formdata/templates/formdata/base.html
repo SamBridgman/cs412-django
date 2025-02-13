@@ -1,0 +1,23 @@
+{% load static %}
+<html>
+    <head>
+        <title>Grubby's Den</title>
+        <link rel="stylesheet" href="{% static 'formdata.css' %}">
+
+    </head>
+    <body>
+
+    <nav>
+        <ul>
+            <li><a href="{% url 'main' %}">Home</a></li>
+            <li><a href="{% url 'order' %}">Order</a></li>
+        </ul>
+    </nav>
+        
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+    </body>
+</html>

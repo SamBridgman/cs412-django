@@ -1,0 +1,36 @@
+{% extends 'formdata/base.html' %}
+
+{% block content %}
+
+
+<div class="confirmation-page">
+    <h1>Order Confirmed!</h1>
+    <p>Thank you, <strong>{{ customer_name }}</strong>! Your meal is on its way.</p>
+
+    <div class="order-summary">
+        <h3>Your Details</h3>
+        <ul>
+            <li><strong>Name:</strong> {{ customer_name }}</li>
+            <li><strong>Phone:</strong> {{ customer_phone }}</li>
+            <li><strong>Email:</strong> {{ customer_email }}</li>
+            <li><strong>Special Instructions:</strong> {{ special_instructions }}</li>
+        </ul>
+
+        <h3>What You Ordered:</h3>
+        <ul>
+            {% for item, value in ordered_items.items %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
+
+        <h3>Total Price:</h3>
+        <p><strong>{{ total_price }}</strong></p>
+        
+        <h3>Expected Pickup Time:</h3>
+        <p><strong>Your order will be ready by {{ order_ready_time }}</strong></p>
+    </div>
+
+
+</div>
+{% endblock %}

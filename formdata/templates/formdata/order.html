@@ -1,0 +1,59 @@
+{% extends 'formdata/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div id="order_page">
+    <h1>WELCOME TO GRUBBY'S DEN ORDERING</h1>
+
+    <form action="{% url 'confirmation' %}" method="POST">
+        {% csrf_token %}
+        
+        <h3>Daily Special</h3>
+        <label for="daily_special">
+            {{ daily_special }} - Price: ${{ ds_price }}
+            <input type="checkbox" name="daily_special">
+        </label>
+
+        <h3>Normal Menu</h3>
+
+        <label>
+            <input type="checkbox" name="pizza"> Pizza - Price: $500
+        </label>
+        <label>
+            &emsp;Would you like greens on the pizza? - Price: $2.50
+            <input type="checkbox" name="pizza_greens">
+        </label>
+        <label>
+            <input type="checkbox" name="coffee"> Coffee - Price: $20.45
+        </label>
+        <label>
+            <input type="checkbox" name="pancakes"> Pancakes - Price: $25.45
+        </label>
+        <label>
+            <input type="checkbox" name="brews"> 400 Brews - Price: $3.50
+        </label>
+
+        <h3>Special Instructions</h3>
+        <textarea name="special_instructions" rows="3" cols="40" placeholder="Any special requests?"></textarea>
+
+        <h3>Customer Info</h3>
+        <label>
+            Name:
+            <input type="text" name="customer_name" required>
+        </label>
+        <label>
+            Phone:
+            <input type="tel" name="customer_phone" required>
+        </label>
+        <label>
+            Email:
+            <input type="email" name="customer_email" required>
+        </label>
+
+        <input type="submit" value="Place Order">
+    </form>
+</div>
+
+{% endblock %}
