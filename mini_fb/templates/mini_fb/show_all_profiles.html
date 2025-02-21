@@ -1,0 +1,45 @@
+<!-- 
+    File: mini_fb/templates/mini_fb/show_all_profiles.html
+    Author: Sam Bridgman
+    Email: bridgman@bu.edu
+    Description: Displays a list of all profiles in a structured table format. Each row 
+    is clickable and redirects to the respective profile page.
+-->
+
+{% extends 'mini_fb/base.html' %}
+<h1>Showing all Profiles</h1>
+<!-- scriptlet code to display the value of the variable `articles` 
+{{ profiles }}
+-->
+{% block content %}
+<main class="table-container">
+    <table class="profile-table">
+        <thead>
+            <tr>
+                <th>Profile Image</th>
+                <th>Name</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in profiles %}
+            <tr class="profile-row" onclick="window.location.href='{% url 'show_profile' a.pk %}'">
+                <td class="profile-image-cell">
+                    {% if a.profile_image_url %}
+                    <img src="{{a.profile_image_url}}" class="profile-image" alt="Profile Image">
+                    {% endif %}
+                </td>
+                <td class="profile-name">
+                    {{ a.first_name }} {{ a.last_name }}
+                </td>
+                <td class="profile-city">
+                    {{ a.city }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}
+
+

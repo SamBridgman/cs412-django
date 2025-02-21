@@ -1,0 +1,29 @@
+
+<!-- 
+    File: mini_fb/templates/mini_fb/base.html
+    Author: Sam Bridgman
+    Email: bridgman@bu.edu
+    Description: Base html
+-->
+
+{% load static %}
+<html>
+    <head>
+        <title>Mini FB</title>
+        <link rel="stylesheet" href="{% static 'mini_fb.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Mini FB</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'ShowAllProfilesView' %}">Show All Profiles</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+    {% block content %}
+    {% endblock %}    
+  
+    </body>
+</html>
