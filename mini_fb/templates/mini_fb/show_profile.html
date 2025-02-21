@@ -1,0 +1,21 @@
+<!-- 
+    File: mini_fb/templates/mini_fb/show_profile.html
+    Author: Sam Bridgman
+    Email: bridgman@bu.edu
+    Description: Profile page template for Mini FB. Displays user information including 
+    profile image, name, and city.
+-->
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<main class="profile-container">
+    <div class="profile-card">
+        {% if profile.profile_image_url %}
+        <img src="{{ profile.profile_image_url }}" alt="Profile Image" class="profile-image">
+        {% endif %}
+        <h1 class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</h1>
+        <p class="profile-city">{{ profile.city }}</p>
+    </div>
+</main>
+
+{% endblock %}
