@@ -16,6 +16,22 @@
         <h1 class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</h1>
         <p class="profile-city">{{ profile.city }}</p>
     </div>
+
 </main>
 
+    <!-- Status Messages Section -->
+    <a href="{% url 'create_status' profile.pk %}">Create a comment</a>
+    <section class="status-section">
+        <h2 class="status-header">Status Messages</h2>
+        <div class="status-message-container">
+            {% for status_message in profile.statusmessage_set.all %}
+            <div class="status-message">
+                <span class="status-timestamp">{{ status_message.timestamp }}</span>
+                <p class="status-text">{{ status_message.message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}
+
+
