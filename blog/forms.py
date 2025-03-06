@@ -2,11 +2,13 @@ from django import forms
 from .models import Article, Comment
 
 class CreateArticleForm(forms.ModelForm):
-    "A form to add an article to db"
+    '''A form to add a new Article to the database.'''
+
     class Meta:
-        "assosciate this form wit a model in a db"
+        '''Associate this form with the Article model; select fields to add.'''
         model = Article
-        fields = ['author','title','text','image_url']
+        # fields = ['author', 'title', 'text', 'image_url']
+        fields = ['author', 'title', 'text', 'image_file']
 
 class CreateCommentForm(forms.ModelForm):
     '''A form to add a Comment to the database.'''
@@ -15,3 +17,11 @@ class CreateCommentForm(forms.ModelForm):
         '''associate this form with the Comment model; select fields'''
         model = Comment
         fields = ['author', 'text', ]  # which fields from model should we use
+
+class UpdateArticleForm(forms.ModelForm):
+    '''A form to update a quote to the database.'''
+
+    class Meta:
+        '''associate this form with the Article model.'''
+        model = Article
+        fields = ['title', 'text', ]  # which fields from model should we use

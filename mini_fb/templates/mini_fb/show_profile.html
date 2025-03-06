@@ -15,6 +15,8 @@
         {% endif %}
         <h1 class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</h1>
         <p class="profile-city">{{ profile.city }}</p>
+        <p class="profile-city">{{ profile.email }}</p>
+        <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
     </div>
 
 </main>
@@ -28,8 +30,14 @@
             <div class="status-message">
                 <span class="status-timestamp">{{ status_message.timestamp }}</span>
                 <p class="status-text">{{ status_message.message }}</p>
+                <a href="{% url 'delete' status_message.pk %}">Delete Message</a>
+                <a href="{% url 'update_status' status_message.pk %}">Update Message</a>
+                {% for img in status_message.get_images %}
+                    <img src="{{ img.image_file.url }}" alt="{{ img.caption }}" style="height:100px; width:100px;">
+                {% endfor %}
             </div>
-            {% endfor %}
+        {% endfor %}
+
         </div>
     </section>
 {% endblock %}

@@ -10,7 +10,6 @@
 {% block content %}
 <h1>Create a new profile</h1>
 
-<!-- display the HTML form -->
 <form action="{% url 'create_profile' %}" method="POST">
     {% csrf_token %}
     <table>
