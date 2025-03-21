@@ -8,7 +8,7 @@ profile details.
 """
 from django.urls import reverse
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import *
 from .forms import *
 
@@ -124,3 +124,44 @@ class UpdateStatusMessageView(UpdateView):
         """
         pk = self.object.profile.pk 
         return reverse('show_profile', kwargs={'pk':pk})
+    
+class AddFriendView(View):
+    """Handles adding a friend by updating the Friend model """
+
+    def dispatch(self, request, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        other_profile = profile = Profile.objects.get(pk='other_pk')
+
+        profile.add_friend(other_profile)
+
+        return reverse('show_profile', pk=profile.pk)
+    
+class ShowFriendSuggestionsView(DetailView):
+    """
+    View to display friend suggestions for a specific Profile.
+    """
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['friend_suggestions'] = self.object.get_friend_suggestions()
+        return context
+
+
+class ShowNewsFeedView(DetailView):
+    """
+    View to display the news feed for a Profile, showing recent status messages.
+    """
+    model = Profile
+    template_name = 'mini_fb/news_feed.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds the news feed to the context
+        """
+        context = super().get_context_data(**kwargs)
+        context['news_feed'] = self.object.get_news_feed()
+        return context
