@@ -10,6 +10,11 @@ from .forms import CreateArticleForm, CreateCommentForm
 from django.views.generic.edit import UpdateView ## add UpdateView to list of imports
 from .forms import UpdateArticleForm
 from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin ## NEW
+from django.contrib.auth.forms import UserCreationForm ## NEW
+from django.contrib.auth.models import User ## NEW
+from django.contrib.auth import login # NEW
+
 
 
 class ShowAllView(ListView):
@@ -39,12 +44,30 @@ class RandomArticleView(DetailView):
         all_articles = Article.objects.all()
         return random.choice(all_articles)
 
-class CreateArticleView(CreateView):
-    "display the html form to get user get"
-    "process the form submission and store the new Article"
-    form_class = CreateArticleForm
-    template_name = 'blog/create_article_form.html'
+class CreateArticleView(LoginRequiredMixin, CreateView):
+    '''A view to create a new Article and save it to the database.'''
 
+    form_class = CreateArticleForm
+    template_name = "blog/create_article_form.html"
+
+    def get_login_url(self) -> str:
+        '''return the URL required for login'''
+        return reverse('login') 
+        
+    def form_valid(self, form):
+        '''
+        Handle the form submission to create a new Article object.
+        '''
+        print(f'CreateArticleView: form.cleaned_data={form.cleaned_data}')
+
+        # find the logged in user
+        user = self.request.user
+        print(f"CreateArticleView user={user} article.user={user}")
+
+        # attach user to form instance (Article object):
+        form.instance.user = user
+
+        return super().form_valid(form)
 
 
 class CreateCommentView(CreateView):
@@ -150,3 +173,39 @@ class DeleteCommentView(DeleteView):
         
         # reverse to show the article page
         return reverse('article', kwargs={'pk':article.pk})
+    
+class ShowAllView(ListView):
+    '''Define a view class to show all blog Articles.'''
+    
+    model = Article
+    template_name = "blog/show_all.html"
+    context_object_name = "articles"
+
+    def dispatch(self, request, *args, **kwargs):
+        '''Override the dispatch method to add debugging information.'''
+
+        if request.user.is_authenticated:
+            print(f'ShowAllView.dispatch(): request.user={request.user}')
+        else:
+            print(f'ShowAllView.dispatch(): not logged in.')
+
+        return super().dispatch(request, *args, **kwargs)
+
+class RegistrationView(CreateView):
+    '''
+    show/process form for account registration
+    '''
+
+    template_name = 'blog/register.html'
+    form_class = UserCreationForm
+    model = User
+
+class UserRegistrationView(CreateView):
+    '''A view to show/process the registration form to create a new User.'''
+
+    template_name = 'blog/register.html'
+    form_class = UserCreationForm
+    model = User
+    
+    def get_success_url(self):
+        return reverse('login')

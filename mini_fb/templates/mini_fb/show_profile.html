@@ -16,9 +16,17 @@
         <h1 class="profile-name" style="margin: 0 0 10px 0; color: #1877f2; font-size: 24px;">{{ profile.first_name }} {{ profile.last_name }}</h1>
         <p class="profile-city" style="margin: 5px 0; color: #65676b; font-size: 16px;">{{ profile.city }}</p>
         <p class="profile-email" style="margin: 5px 0; color: #65676b; font-size: 16px;">{{ profile.email }}</p>
+        {% if request.user.is_authenticated and request.user == profile.user %}
         <a href="{% url 'update_profile' profile.pk %}" class="update-btn" style="display: inline-block; background-color: #1877f2; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; margin-top: 10px; font-weight: bold;">Update Profile</a>
+        {% else %}
+        {% endif %}
     </div>
+    {% if request.user.is_authenticated and request.user == profile.user %}
+
     <a href="{% url 'friend_suggestions' pk=profile.pk %}" class="find-friends-btn">Find Friends</a>
+
+    {% else %}
+    {% endif %}
     <!-- Friends Section -->
     <section style="background-color: #f0f2f5; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <h2 style="color: #1877f2; margin-top: 0; border-bottom: 1px solid #dddfe2; padding-bottom: 10px;">Friends</h2>
@@ -43,7 +51,12 @@
     </section>
 
     <!-- Status Messages Section -->
+    {% if request.user.is_authenticated and request.user == profile.user %}
+
     <a href="{% url 'create_status' profile.pk %}" class="create-status-btn" style="display: block; background-color: #42b72a; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; margin-bottom: 20px; text-align: center; font-weight: bold;">Create a comment</a>
+
+    {% else %}
+    {% endif %}
     
     <section class="status-section" style="background-color: #f0f2f5; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <h2 class="status-header" style="color: #1877f2; margin-top: 0; border-bottom: 1px solid #dddfe2; padding-bottom: 10px;">Status Messages</h2>
@@ -53,8 +66,13 @@
                 <span class="status-timestamp" style="color: #65676b; font-size: 12px; display: block; margin-bottom: 5px;">{{ status_message.timestamp }}</span>
                 <p class="status-text" style="margin: 0 0 15px 0; line-height: 1.5;">{{ status_message.message }}</p>
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    {% if request.user.is_authenticated and request.user == profile.user %}
+
                     <a href="{% url 'delete' status_message.pk %}" class="delete-btn" style="color: #e41e3f; text-decoration: none; font-size: 14px; font-weight: bold;">Delete</a>
                     <a href="{% url 'update_status' status_message.pk %}" class="update-btn" style="color: #1877f2; text-decoration: none; font-size: 14px; font-weight: bold;">Update</a>
+
+                    {% else %}
+                    {% endif %}
                 </div>
                 {% for img in status_message.get_images %}
                     <img src="{{ img.image_file.url }}" alt="{{ img.caption }}" class="status-image" style="max-width: 100%; border-radius: 8px; margin-top: 10px;">

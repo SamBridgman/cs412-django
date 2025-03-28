@@ -17,11 +17,29 @@
             <h1>Mini FB</h1>
             <nav>
                 <ul>
+                    {% if request.user.is_authenticated %}
                     <li><a href="{% url 'ShowAllProfilesView' %}">Show All Profiles</a></li>
                     <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
+                    <li><form id="logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                      </form></li>
+
+                    <!-- URLs for users who are not logged in -->
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'ShowAllProfilesView' %}">Show All Profiles</a></li>
+                    <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </header>
+
+        {% if request.user.is_authenticated %}
+        Logged in as: {{request.user}}
+        {% else %}
+        Not logged in.
+        {% endif %}
     
     {% block content %}
     {% endblock %}    
