@@ -9,6 +9,8 @@ in the Mini FB application. Also displays the Status Message Model for creating 
 
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Profile(models.Model):
@@ -20,6 +22,8 @@ class Profile(models.Model):
     city = models.TextField(blank=False)
     email = models.TextField(blank=False)
     profile_image_url = models.URLField(blank=True) ## new
+    user = models.ForeignKey(User, on_delete=models.CASCADE) ## NEW
+
 
     def get_status_messages(self):
         messages = StatusMessage.objects.filter(profile=self)
@@ -32,6 +36,8 @@ class Profile(models.Model):
         """Return a list of Profile instances representing this user's friends."""
         friends = Friend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
         return [friend.profile2 if friend.profile1 == self else friend.profile1 for friend in friends]
+    
+    
     
     def add_friend(self, other):
         """Add a friend relationship between self and another Profile.
