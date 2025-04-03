@@ -1,0 +1,84 @@
+{% extends "voter_analytics/base.html" %}
+
+{% block content %}
+<div>
+    <div>
+        <div>
+            <div>
+                <div >
+                    <h2>Voter Details</h2>
+                </div>
+                <div>
+                    <h3>Personal Information</h3>
+                    <p><strong>Name:</strong> {{ voter.first_name }} {{ voter.last_name }}</p>
+                    <p><strong>Voter ID:</strong> {{ voter.voter_id }}</p>
+                    <p><strong>Date of Birth:</strong> {{ voter.date_of_birth }}</p>
+                    <p><strong>Date of Registration:</strong> {{ voter.date_of_registration }}</p>
+                    <p><strong>Party Affiliation:</strong> {{ voter.party_affiliation }}</p>
+                    <p><strong>Precinct Number:</strong> {{ voter.precinct_number }}</p>
+                    <p><strong>Voter Score:</strong> {{ voter.voter_score|default:"Not available" }}</p>
+
+                    <h3 >Address</h3>
+                    <p>
+                        {{ voter.street_number }} {{ voter.street_name }}
+                        {% if voter.apartment_number %}
+                            {{ voter.apartment_number }}
+                        {% endif %}
+                        <br>
+                        {{ voter.zip_code }}
+                    </p>
+
+                    <h3>Voting History</h3>
+                    <ul >
+                        <li >
+                            2020 State Election
+                            <span >
+                                {{ voter.v20state|yesno:"Voted,Did not vote" }}
+                            </span>
+                        </li>
+                        <li >
+                            2021 Town Election
+                            <span >
+                                {{ voter.v21town|yesno:"Voted,Did not vote" }}
+                            </span>
+                        </li>
+                        <li >
+                            2021 Primary Election
+                            <span >
+                                {{ voter.v21primary|yesno:"Voted,Did not vote" }}
+                            </span>
+                        </li>
+                        <li>
+                            2022 General Election
+                            <span >
+                                {{ voter.v22general|yesno:"Voted,Did not vote" }}
+                            </span>
+                        </li>
+                        <li >
+                            2023 Town Election
+                            <span >
+                                {{ voter.v23town|yesno:"Voted,Did not vote" }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div >
+            <div >
+                <div>
+                    <h3>Location</h3>
+                </div>
+                <div >
+                    <p>View this voter's location on Google Maps:</p>
+                    <a href="{{ google_maps_url }}" target="_blank" >
+                        <i ></i> View on Google Maps
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %} 

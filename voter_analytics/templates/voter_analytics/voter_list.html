@@ -1,0 +1,64 @@
+{% extends "voter_analytics/base.html" %}
+
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <h1 style="color: #2c3e50; margin-bottom: 30px; font-weight: 600; text-align: center;">Voter List</h1>
+    
+    {% include "voter_analytics/voter_filter_form.html" %}
+    
+    <table  style="background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden;">
+        <thead style="background-color: #f8f9fa;">
+            <tr>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">First Name</th>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">Last Name</th>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">Street Address</th>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">Date of Birth</th>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">Party Affiliation</th>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">Voter Score</th>
+                <th style="padding: 15px; color: #2c3e50; font-weight: 600; border-bottom: 2px solid #dee2e6;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for voter in voters %}
+            <tr style="transition: background-color 0.2s;">
+                <td style="padding: 12px 15px; color: #34495e;">{{ voter.first_name }}</td>
+                <td style="padding: 12px 15px; color: #34495e;">{{ voter.last_name }}</td>
+                <td style="padding: 12px 15px; color: #34495e;">
+                    {{ voter.street_number }} {{ voter.street_name }}
+                    {% if voter.apartment_number %}
+                        Apt {{ voter.apartment_number }}
+                    {% endif %}
+                </td>
+                <td style="padding: 12px 15px; color: #34495e;">{{ voter.date_of_birth|date:"Y-m-d" }}</td>
+                <td style="padding: 12px 15px; color: #34495e;">{{ voter.party_affiliation }}</td>
+                <td style="padding: 12px 15px; color: #34495e;">{{ voter.voter_score|default:"N/A" }}</td>
+                <td style="padding: 12px 15px; color: #34495e;">
+                    <a href="{% url 'voter' voter.voter_id %}" class="btn btn-sm btn-primary">
+                        <i ></i> View Details
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <nav  style="margin-top: 30px;">
+        <ul style="display: flex; list-style: none; padding: 0; margin: 0; gap: 10px;">
+            {% if page_obj.has_previous %}
+            <li >
+                <a href="?page={{ page_obj.previous_page_number }}" style="color: #2c3e50; border: 1px solid #dee2e6; padding: 8px 16px; border-radius: 4px; text-decoration: none;">Previous</a>
+            </li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}" style="color: #2c3e50; border: 1px solid #dee2e6; padding: 8px 16px; border-radius: 4px; text-decoration: none;">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %} 
