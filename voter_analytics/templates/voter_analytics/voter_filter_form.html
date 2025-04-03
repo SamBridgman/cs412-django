@@ -1,0 +1,123 @@
+
+{% load static %}
+
+<div class="filter-container">
+    <form method="get" class="filter-form">
+        <div class="filter-group">
+            <label for="party">Party Affiliation</label>
+            <select name="party" id="party">
+                <option value="">All Parties</option>
+                <option value="D " {% if request.GET.party == 'D ' %}selected{% endif %}>Democrat</option>
+                <option value="R " {% if request.GET.party == 'R ' %}selected{% endif %}>Republican</option>
+                <option value="I " {% if request.GET.party == 'I ' %}selected{% endif %}>Independent</option>
+                <option value="U " {% if request.GET.party == 'U ' %}selected{% endif %}>Unaffiliated</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="min_dob">Minimum Birth Year</label>
+            <select name="min_dob" id="min_dob">
+                <option value="">From</option>
+                {% for year in "x"|rjust:"100" %}
+                    <option value="{{ forloop.counter|add:1923 }}" {% if request.GET.min_dob == forloop.counter|add:1923|stringformat:"s" %}selected{% endif %}>
+                        {{ forloop.counter|add:1923 }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="max_dob">Maximum Birth Year</label>
+            <select name="max_dob" id="max_dob">
+                <option value="">To</option>
+                {% for year in "x"|rjust:"100" %}
+                    <option value="{{ forloop.counter|add:1923 }}" {% if request.GET.max_dob == forloop.counter|add:1923|stringformat:"s" %}selected{% endif %}>
+                        {{ forloop.counter|add:1923 }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="voter_score">Voter Score</label>
+            <select name="voter_score" id="voter_score">
+                <option value="">Any Score</option>
+                {% for score in "x"|rjust:"5" %}
+                    <option value="{{ forloop.counter }}" {% if request.GET.voter_score == forloop.counter|stringformat:"s" %}selected{% endif %}>
+                        {{ forloop.counter }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="voted_previous">Voted in Previous Election</label>
+            <input type="checkbox" name="voted_previous" id="voted_previous" {% if request.GET.voted_previous %}checked{% endif %}>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit">Apply Filters</button>
+            <a href="." class="clear-button">Clear Filters</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.filter-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    color: #34495e;
+}
+
+.filter-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.filter-actions button {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-actions .clear-button {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+</style> 
