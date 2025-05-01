@@ -1,0 +1,77 @@
+{% extends 'project/base.html' %}
+
+<!--
+Author: Sam Bridgman
+Email: Bridgman@bu.edu
+Description: Page for viewing and sending messages to other users.
+-->
+
+{% block content %}
+<div class="p-8">
+    <div class="mb-8">
+        <a href="{% url 'inbox' %}" class="text-xl font-bold text-black hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+            ← Back to Messages
+        </a>
+    </div>
+
+    <div class="mb-8 flex items-center space-x-4">
+        {% if other_user.project_profile.profile_image_url and other_user.project_profile.profile_image_url|slice:":4" == "http" %}
+            <img src="{{ other_user.project_profile.profile_image_url }}" alt="{{ other_user.username }}'s profile" 
+                class="w-16 h-16 object-cover border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        {% else %}
+            <div class="w-16 h-16 bg-[#FFD93D] border-4 border-black flex items-center justify-center">
+                <span class="text-black font-black text-2xl">{{ other_user.username|first|upper }}</span>
+            </div>
+        {% endif %}
+        <h1 class="text-4xl font-black text-black">Conversation with {{ other_user.username }}</h1>
+    </div>
+
+    <div class="flex flex-col h-[calc(100vh-16rem)]">
+        <div id="messages-container" class="flex-1 overflow-y-auto space-y-4 mb-8">
+            {% for message in messages %}
+                <div class="flex {% if message.sender == request.user %}justify-end{% endif %}">
+                    <div class="max-w-2xl {% if message.sender == request.user %}bg-[#FFD93D]{% else %}bg-white{% endif %} p-6 border-4 border-black">
+                        <div class="flex items-center space-x-4 mb-4">
+                            {% if message.sender.project_profile.profile_image_url and message.sender.project_profile.profile_image_url|slice:":4" == "http" %}
+                                <img src="{{ message.sender.project_profile.profile_image_url }}" alt="{{ message.sender.username }}'s profile" 
+                                    class="w-10 h-10 object-cover border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            {% else %}
+                                <div class="w-10 h-10 {% if message.sender == request.user %}bg-[#FF5F5F]{% else %}bg-[#FFD93D]{% endif %} border-4 border-black flex items-center justify-center">
+                                    <span class="{% if message.sender == request.user %}text-white{% else %}text-black{% endif %} font-black text-lg">{{ message.sender.username|first|upper }}</span>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <span class="font-bold text-lg ">{{ message.sender.username }}</span>
+                                <span class="block text-lg font-bold text-black">{{ message.created_at|date:"F j, Y, g:i a" }}</span>
+                            </div>
+                        </div>
+                        <p class="text-lg font-bold text-black">{{ message.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" class="" onsubmit="scrollToBottom()">
+            {% csrf_token %}
+            {{ form.content }}
+            <div class="mt-4 flex justify-end">
+                <button type="submit" class="px-6 py-2 bg-[#FF5F5F] text-white font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                    Send Message
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    function scrollToBottom() {
+        const container = document.getElementById('messages-container');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Scroll to bottom on page load
+    window.addEventListener('load', scrollToBottom);
+</script>
+{% endblock %}
+{% endblock %} 

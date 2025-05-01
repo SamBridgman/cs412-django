@@ -1,0 +1,37 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div class="container mx-auto max-w-4xl">
+    <div class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <!-- Header Bar -->
+        <div class="bg-black text-white px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-4 h-4 bg-[#FF5F5F] rounded-none"></div>
+                <div class="w-4 h-4 bg-[#FFD93D] rounded-none"></div>
+                <div class="w-4 h-4 bg-[#4CAF50] rounded-none"></div>
+            </div>
+            <span class="font-black text-2xl tracking-tight">EDIT BIO</span>
+            <div class="w-4 h-4"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-8">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-6">
+                    <label for="bio" class="block text-xl font-black text-black mb-2">BIO</label>
+                    <textarea name="bio" id="bio" rows="6" class="w-full border-4 border-black p-4 focus:outline-none focus:border-[#FFD93D]">{{ user.project_profile.bio }}</textarea>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="w-full bg-[#FFD93D] text-black font-bold py-3 px-6 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                        SAVE
+                    </button>
+                    <a href="{% url 'show_user' user.pk %}" class="w-full bg-[#FF5F5F] text-white font-bold py-3 px-6 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 text-center">
+                        CANCEL
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

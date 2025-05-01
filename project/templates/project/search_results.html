@@ -1,0 +1,52 @@
+{% extends 'project/base.html' %}
+
+<!--
+Author: Sam Bridgman
+Email: Bridgman@bu.edu
+Description: Search results page for BU Real. This is where users can search for other users
+            and start conversations with them.
+-->
+
+{% block content %}
+<div class="container mx-auto max-w-4xl">
+    <!-- Search Form -->
+    <div class="mb-8">
+        <form method="get" action="{% url 'search_users' %}" class="flex space-x-4">
+            <input type="text" name="search" value="{{ request.GET.search }}" 
+                   class="flex-1 border-4 border-black p-4 focus:outline-none focus:border-[#FFD93D]"
+                   placeholder="Search users...">
+            <button type="submit" 
+                    class="bg-[#FFD93D] text-black font-bold py-4 px-8 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                SEARCH
+            </button>
+        </form>
+    </div>
+
+    <!-- Search Results -->
+    <div class="space-y-4">
+        {% for user in users %}
+            <a href="{% url 'conversation' user.id %}" class="block">
+                <div class="p-6 bg-white border-4 border-black hover:bg-gray-50 transition-colors duration-200">
+                    <div class="flex items-center space-x-4">
+                        {% if user.project_profile.profile_image_url and user.project_profile.profile_image_url|slice:":4" == "http" %}
+                            <img src="{{ user.project_profile.profile_image_url }}" alt="{{ user.username }}'s profile" 
+                                class="w-12 h-12 object-cover border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        {% else %}
+                            <div class="w-12 h-12 bg-[#FFD93D] border-4 border-black flex items-center justify-center">
+                                <span class="text-black font-black text-xl">{{ user.username|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <span class="font-bold text-xl text-black">{{ user.username }}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <div class="text-center p-12 border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                <p class="text-xl font-bold text-black">No users found</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

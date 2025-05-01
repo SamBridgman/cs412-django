@@ -1,0 +1,18 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-8">
+    <h1 class="text-6xl font-black text-black mb-12 uppercase">LOGGED OUT</h1>
+    
+    <div class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
+        <p class="text-xl font-bold text-black mb-6">You have been successfully logged out.</p>
+        
+        <div class="flex justify-end">
+            <a href="{% url 'login' %}" 
+               class="inline-flex justify-center py-4 px-6 border-4 border-black bg-[#FF5F5F] text-white font-bold text-xl uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                Log in again
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

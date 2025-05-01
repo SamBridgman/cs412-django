@@ -1,0 +1,43 @@
+<!--
+Author: Sam Bridgman
+Email: Bridgman@bu.edu
+Description: The main home page of BU Real. This is where users land when they first visit the site.
+            Shows a feed of posts and allows users to interact with content.
+-->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div class="w-full">
+    <div class="text-center mb-12">
+        <h1 class="text-6xl font-black text-black uppercase mb-6">Welcome to BUreal</h1>
+        <p class="text-xl font-bold text-black">Discover and share your experiences with the BU community</p>
+    </div>
+    
+    <!-- Search Form -->
+    <div class="max-w-2xl mx-auto mb-8">
+        <form method="get" action="{% url 'home' %}" class="flex gap-2">
+            <input type="text" name="search" value="{{ search_query }}" 
+                   class="flex-1 px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:shadow-none focus:translate-x-1 focus:translate-y-1 transition-all duration-200"
+                   placeholder="Search posts...">
+            <button type="submit" 
+                    class="px-6 py-2 bg-[#FF5F5F] text-white font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                Search
+            </button>
+        </form>
+    </div>
+    
+    {% if request.user.is_authenticated %}
+        <div class="mb-12 text-center">
+            <a href="{% url 'create_post' %}" class="inline-flex items-center px-6 py-3 bg-[#FF5F5F] text-white font-bold border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Create New Post
+            </a>
+        </div>
+    {% endif %}
+    <div class="w-full flex justify-center">
+        {% include 'project/posts_fragment.html' with posts=posts %}
+    </div>
+</div>
+{% endblock %}

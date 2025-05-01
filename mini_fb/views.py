@@ -37,8 +37,6 @@ class ShowProfilePageView(DetailView):
     template_name = 'mini_fb/show_profile.html'  # Reusing the same template
     context_object_name = 'profile'
 
-
-
 class CreateProfileView(CreateView):
     model = Profile
     template_name = "mini_fb/create_profile_form.html"

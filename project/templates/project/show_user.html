@@ -1,0 +1,139 @@
+<!--
+Author: Sam Bridgman
+Email: Bridgman@bu.edu
+Description: User profile page. Shows a user's information, posts, and activity.
+         
+-->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div class="container mx-auto max-w-4xl">
+    <!-- Neo Brutalist Container -->
+    <div class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <!-- Header Bar -->
+        <div class="bg-black text-white px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-4 h-4 bg-[#FF5F5F] rounded-none"></div>
+                <div class="w-4 h-4 bg-[#FFD93D] rounded-none"></div>
+                <div class="w-4 h-4 bg-[#4CAF50] rounded-none"></div>
+            </div>
+            <span class="font-black text-2xl tracking-tight">USER PROFILE</span>
+            <div class="w-4 h-4"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-8 relative">
+            <!-- Header Section with User Identity -->
+            <div class="relative mb-12 pb-8 border-b-4 border-black">
+                <div class="flex items-center space-x-8">
+                    <!-- Profile Image -->
+                    <div class="relative">
+                        {% if user == request.user %}
+                        <button onclick="document.getElementById('profileModal').classList.remove('hidden')" class="cursor-pointer">
+                        {% endif %}
+                            {% if user.project_profile.profile_image_url and user.project_profile.profile_image_url|slice:":4" == "http" %}
+                                <img src="{{ user.project_profile.profile_image_url }}" alt="{{ user.username }}'s profile" 
+                                    class="w-32 h-32 object-cover border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                            {% else %}
+                                <div class="w-32 h-32 bg-[#FF5F5F] flex items-center justify-center border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                                    <span class="text-5xl font-black text-white">{{ user.username|first|upper }}</span>
+                                </div>
+                            {% endif %}
+                        {% if user == request.user %}
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h1 class="text-6xl font-black text-black mb-3">{{ user.username }}</h1>
+                        <p class="text-xl font-bold text-gray-600">Member since {{ user.date_joined|date:"F Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bio Section -->
+            <div class="relative mb-12 pb-8 border-b-4 border-black">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-3xl font-black text-black">BIO</h2>
+                    {% if user == request.user %}
+                    <a href="{% url 'edit_bio' %}" class="bg-[#FFD93D] text-black px-4 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                        EDIT BIO
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="bg-gray-50 border-4 border-black p-6">
+                    {% if user.project_profile.bio %}
+                        <p class="text-lg whitespace-pre-wrap">{{ user.project_profile.bio }}</p>
+                    {% else %}
+                        <p class="text-lg text-gray-500 italic">No bio yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Profile Image Upload Modal -->
+            <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+                <div class="bg-white p-8 rounded-lg border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full mx-4">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">UPDATE PROFILE IMAGE</h2>
+                        <button onclick="document.getElementById('profileModal').classList.add('hidden')" class="text-2xl font-bold hover:text-red-500">×</button>
+                    </div>
+                    <form method="post" action="{% url 'update_profile' user.id %}">
+                        {% csrf_token %}
+                        <div class="mb-6">
+                            {{ form.profile_image_url }}
+                        </div>
+                        <button type="submit" class="w-full bg-red-500 text-white font-bold py-3 px-6 rounded-lg border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                            SAVE
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Activity Stats -->
+            <div class="relative grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-[#FFD93D] border-4 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                    <h3 class="text-xl font-black text-black mb-2">POSTS</h3>
+                    <a href="{% url 'show_all_posts' %}?user={{ user.id }}" class="block">
+                        <p class="text-5xl font-black text-black">{{ user.posts.count|add:user.reposts.count }}</p>
+                    </a>
+                </div>
+                <div class="bg-[#4CAF50] border-4 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                    <h3 class="text-xl font-black text-black mb-2">COMMENTS</h3>
+                    <a href="{% url 'show_all_posts' %}?user_comments={{ user.id }}" class="block">
+                        <p class="text-5xl font-black text-black">{{ user.comments.count }}</p>
+                    </a>
+                </div>
+                <div class="bg-[#FF5F5F] border-4 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                    <h3 class="text-xl font-black text-black mb-2">LIKES</h3>
+                    <a href="{% url 'show_all_posts' %}?user_likes={{ user.id }}" class="block">
+                        <p class="text-5xl font-black text-black">{{ user.likes.count }}</p>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- User Details -->
+            <div class="relative bg-white border-4 border-black p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <h2 class="text-3xl font-black text-black mb-6">ACCOUNT DETAILS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="group">
+                            <span class="text-lg font-black text-black block mb-2">USER ID</span>
+                            <span class="text-xl font-mono bg-gray-100 px-4 py-2 border-4 border-black inline-block">{{ user.id }}</span>
+                        </div>
+                        <div class="group">
+                            <span class="text-lg font-black text-black block mb-2">ACCOUNT CREATED</span>
+                            <span class="text-xl font-mono bg-gray-100 px-4 py-2 border-4 border-black inline-block">{{ user.date_joined|date:"F j, Y, g:i a" }}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="group">
+                            <span class="text-lg font-black text-black block mb-2">LAST ACTIVE</span>
+                            <span class="text-xl font-mono bg-gray-100 px-4 py-2 border-4 border-black inline-block">{{ user.last_login|date:"F j, Y, g:i a" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

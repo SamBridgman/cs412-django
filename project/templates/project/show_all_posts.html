@@ -1,0 +1,7 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div >
+    {% include 'project/posts_fragment.html' with posts=posts %}
+</div>
+{% endblock %}

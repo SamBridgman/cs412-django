@@ -1,0 +1,207 @@
+<!--
+Author: Sam Bridgman
+Email: Bridgman@bu.edu
+Description: Detailed view of a single post. Shows the full post content, comments,
+            and allows users to interact with the post (like, comment, share).
+-->
+{% extends 'project/base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-8">
+    <div class="max-w-4xl mx-auto">
+        <article class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-12">
+                    <div class="flex items-center space-x-6">
+                        {% if post.user.project_profile.profile_image_url and post.user.project_profile.profile_image_url|slice:":4" == "http" %}
+                            <img src="{{ post.user.project_profile.profile_image_url }}" alt="{{ post.user.username }}'s profile" 
+                                class="w-12 h-12 object-cover border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        {% else %}
+                            <div class="w-12 h-12 bg-[#FF5F5F] border-4 border-black flex items-center justify-center">
+                                <span class="text-white font-black text-xl">{{ post.user.username|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <a href="{% url 'show_user' post.user.pk %}" class="font-black text-xl text-black hover:translate-x-1 hover:translate-y-1 transition-all duration-200">{{ post.user.username|upper }}</a>
+                            <span class="block font-bold text-xl text-black">{{ post.created_at|date:"F j, Y, g:i a" }}</span>
+                            {% if post.edited %}
+                                <span class="block text-sm font-bold text-gray-600 mt-1">
+                                    Edited {{ post.edited_at|date:"F j, Y, g:i a" }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        {% if post.category %}
+                            <span class="px-6 py-2 font-black text-xl bg-[#FFD93D] border-4 border-black">
+                                {{ post.category.name|upper }}
+                            </span>
+                        {% endif %}
+                        {% if user == post.user %}
+                            <a href="{% url 'edit_post' post.pk %}" class="bg-[#4CAF50] text-white px-6 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 font-bold text-xl">
+                                EDIT POST
+                            </a>
+                            <a href="{% url 'delete_post' post.pk %}" class="bg-[#FF5F5F] text-white px-6 py-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 font-bold text-xl">
+                                DELETE POST
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h1 class="text-6xl font-black text-black mb-8 uppercase">{{ post.title }}</h1>
+                
+                <div class="prose max-w-none mb-12">
+                    <p class="font-bold text-xl">{{ post.content|linebreaks }}</p>
+                </div>
+
+                {% if post.image_url %}
+                <div class="mb-12">
+                    <img src="{{ post.image_url }}" alt="Post image" 
+                         class="max-w-full h-auto border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                </div>
+                {% endif %}
+
+                <div class="flex items-center space-x-8 text-xl border-t-4 border-black pt-6">
+                    <div class="flex items-center space-x-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <span class="font-bold">{{ post.view_count }} VIEWS</span>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="flex items-center space-x-4">
+                        <form method="POST" action="{% url 'toggle_like' post.id %}" class="m-0 p-0">
+                            {% csrf_token %}
+                            <button type="submit" class="flex items-center space-x-4 hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                                <svg class="w-6 h-6" fill="{% if is_liked %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                                </svg>
+                                <span class="font-bold">{{ post.like_count }}</span>
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'login' %}" class="flex items-center space-x-4 hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                            </svg>
+                            <span class="font-bold">{{ post.like_count }}</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="flex items-center space-x-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <span class="font-bold">{{ post.comment_count }} COMMENTS</span>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="flex items-center space-x-4">
+                        <form method="POST" action="{% url 'toggle_repost' post.id %}" class="m-0 p-0">
+                            {% csrf_token %}
+                            <button type="submit" class="flex items-center space-x-4 hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                                <svg class="w-6 h-6" fill="{% if is_reposted %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                </svg>
+                                <span class="font-bold">{{ post.reposts.count }} REPOSTS</span>
+                            </button>
+                        </form>
+                        <button onclick="document.getElementById('quoteRepostModal').classList.remove('hidden')" class="flex items-center space-x-4 hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                            <span class="font-bold">QUOTE REPOST</span>
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+
+        <!-- Quote Repost Modal -->
+        <div id="quoteRepostModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-8 border-4 border-black max-w-2xl w-full">
+                <h3 class="text-2xl font-black text-black mb-6">Quote Repost</h3>
+                <form method="POST" action="{% url 'create_quote_repost' post.id %}">
+                    {% csrf_token %}
+                    <textarea name="commentary" rows="4" class="w-full px-6 py-4 border-4 border-black font-bold text-xl mb-6" placeholder="Add your thoughts..."></textarea>
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" onclick="document.getElementById('quoteRepostModal').classList.add('hidden')" class="px-6 py-3 border-4 border-black font-bold hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-6 py-3 bg-[#FF5F5F] text-white border-4 border-black font-bold hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                            Repost
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="mt-12">
+            <h2 class="text-3xl font-black text-black mb-8 uppercase">Comments</h2>
+            
+            <!-- Comment Form -->
+            {% if user.is_authenticated %}
+            <div class="bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 mb-12">
+                <h3 class="text-xl font-black text-black mb-6 uppercase">Add a Comment</h3>
+                <form method="POST" action="{% url 'create_comment' post.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-6">
+                        <textarea name="content" rows="4" class="w-full px-6 py-4 border-4 border-black font-bold text-xl focus:outline-none" placeholder="Write your comment here..." required pattern="\S+.*" title="Please enter a comment"></textarea>
+                    </div>
+                    <button type="submit" class="bg-[#FF5F5F] text-white px-8 py-4 border-4 border-black font-black text-xl hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                        POST COMMENT
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <div class="bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 mb-12">
+                <h3 class="text-xl font-black text-black mb-6 uppercase">Want to Comment?</h3>
+                <p class="font-bold text-xl mb-6">Please <a href="{% url 'login' %}" class="text-[#FF5F5F] hover:translate-x-1 hover:translate-y-1 transition-all duration-200">log in</a> to leave a comment.</p>
+            </div>
+            {% endif %}
+
+            <!-- Comments List -->
+            <div class="space-y-8">
+                {% for comment in post.comments.all|dictsortreversed:"created_at" %}
+                <div class="bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-6">
+                            {% if comment.user.project_profile.profile_image_url and comment.user.project_profile.profile_image_url|slice:":4" == "http" %}
+                                <img src="{{ comment.user.project_profile.profile_image_url }}" alt="{{ comment.user.username }}'s profile" 
+                                    class="w-10 h-10 object-cover border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            {% else %}
+                                <div class="w-10 h-10 bg-[#FF5F5F] border-4 border-black flex items-center justify-center">
+                                    <span class="text-white font-black text-lg">{{ comment.user.username|first|upper }}</span>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'show_user' comment.user.pk %}" class="font-black text-xl text-black hover:translate-x-1 hover:translate-y-1 transition-all duration-200">{{ comment.user.username|upper }}</a>
+                                <span class="block font-bold text-xl text-black">{{ comment.created_at|date:"F j, Y, g:i a" }}</span>
+                            </div>
+                        </div>
+                        {% if comment.user == request.user %}
+                        <a href="{% url 'delete_comment' comment.pk %}" class="text-black hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="prose max-w-none">
+                        <p class="font-bold text-xl">{{ comment.content|linebreaks }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center font-bold text-xl text-black py-8 border-4 border-black">
+                    NO COMMENTS YET. BE THE FIRST TO COMMENT!
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
